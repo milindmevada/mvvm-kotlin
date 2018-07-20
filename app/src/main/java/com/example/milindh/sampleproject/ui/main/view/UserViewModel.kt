@@ -2,8 +2,9 @@ package com.example.milindh.sampleproject.ui.main.view
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.example.milindh.sampleproject.ui.main.repo.UserRepository
+import android.util.Log
 import com.example.milindh.sampleproject.ui.main.model.Response
+import com.example.milindh.sampleproject.ui.main.repo.UserRepository
 import javax.inject.Inject
 
 class UserViewModel @Inject constructor(private val mUserRepo: UserRepository) : ViewModel() {
@@ -22,5 +23,12 @@ class UserViewModel @Inject constructor(private val mUserRepo: UserRepository) :
             return
         }
         userModel = mUserRepo.getUserData()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("DISPOSE", "----- disposed -------")
+        mUserRepo.getCompositeDisposable().clear()
+        mUserRepo.getCompositeDisposable().dispose()
     }
 }

@@ -6,6 +6,8 @@ import com.example.milindh.sampleproject.ui.main.model.Error
 import com.example.milindh.sampleproject.ui.main.model.Response
 import com.example.milindh.sampleproject.ui.main.model.UserModel
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -13,9 +15,13 @@ import javax.inject.Inject
 
 class UserRepository @Inject constructor(private val api: GithubServices) {
 
+    private val mCompositeDisposable = CompositeDisposable()
+
     private val progress = MutableLiveData<Boolean>()
 
     fun getProgress() = progress
+
+    fun getCompositeDisposable() = mCompositeDisposable
 
     fun getUserData(): MutableLiveData<Response> {
         val data = MutableLiveData<Response>()
@@ -32,7 +38,7 @@ class UserRepository @Inject constructor(private val api: GithubServices) {
                             progress.postValue(false)
                             data.value = Error("User not found")
                         }
-                )
+                ).addTo(mCompositeDisposable)
         return data
     }
 
